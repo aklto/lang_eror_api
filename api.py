@@ -11,8 +11,9 @@ app = FastAPI()
 
 class TextAnalyzer:
     def __init__(self):
-        self.tool = language_tool_python.LanguageTool('en-US')
+        self.tool = language_tool_python.LanguageTool('en-US', remote_server='https://api.languagetool.org')
         self.translator = Translator()
+        
         self.error_type_colors = {
             'grammar': 'red',
             'typographical': 'blue',
