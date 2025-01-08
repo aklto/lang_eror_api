@@ -138,6 +138,14 @@ async def error_chart(request: TextRequest):
     chart = analyzer.create_error_chart(matches)
     return FileResponse(chart, media_type="image/png", filename="error_chart.png")
 
+@app.post("/translate_to_russian")
+async def translate_to_russian(request: TextRequest):
+    try:
+        translation = analyzer.translator.translate(request.text, src='en', dest='ru')
+        return JSONResponse(content={"original_text": request.text, "translated_text": translation.text})
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)})
+
 @app.get("/")
 async def root():
     return {"message": "Text Analyzer API"}
