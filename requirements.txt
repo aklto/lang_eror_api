@@ -4,4 +4,3 @@ language-tool-python
 matplotlib
 googletrans==4.0.0-rc1
 pydantic
-re
