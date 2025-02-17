@@ -6,6 +6,7 @@ from collections import Counter
 import io
 from googletrans import Translator
 from pydantic import BaseModel
+import re
 
 app = FastAPI()
 
@@ -139,11 +140,14 @@ async def error_chart(request: TextRequest):
     chart = analyzer.create_error_chart(matches)
     return FileResponse(chart, media_type="image/png", filename="error_chart.png")
 
+
 @app.post("/translate_to_russian")
 async def translate_to_russian(request: TextRequest):
     try:
-        translation = analyzer.translator.translate(request.text, src='en', dest='ru')
-        return JSONResponse(content={"original_text": request.text, "translated_text": translation.text})
+        translation = analyzer.translator.translate(request.text, src='en', dest='ru').text
+        # Добавляем пробел после точки и восклицательного/вопросительного знака, если его нет
+        translation = re.sub(r'([.!?])(\S)', r'\1 \2', translation)
+        return JSONResponse(content={"original_text": request.text, "translated_text": translation})
     except Exception as e:
         return JSONResponse(content={"error": str(e)})
 
